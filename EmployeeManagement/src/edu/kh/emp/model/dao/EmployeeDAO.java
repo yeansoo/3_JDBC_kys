@@ -46,8 +46,8 @@ public class EmployeeDAO {
 	
 	private String driver="oracle.jdbc.driver.OracleDriver";
 	private String url="jdbc:oracle:thin:@localhost:1521:XE";
-	private String user="kh_kys";
-	private String pw="kh1234";
+	private String user="system";
+	private String pw="pass";
 	
 	
 	/** 전체 사원 정보 조회 DAO
