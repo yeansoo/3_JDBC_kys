@@ -90,4 +90,40 @@ public class TestDAO {
 		return result;
 	}
 
+	public int selup(Connection conn, TestVO vo1) throws SQLException {
+		int result=0;
+		
+		try {
+			// 2. SQL 작성(test-query.xml 에 작성된 SQL 얻어오기)
+			//				-> prop 이 저장하고 있음
+			
+			String sql=prop.getProperty("selup");
+			
+			
+			
+			// 3. ProparedStatement 객체 생성
+			pstmt=conn.prepareStatement(sql);
+			// -> throws 예외 처리 사용 
+			
+			// 4. ?(위치홀더) 에 알맞은 값 세팅 
+			pstmt.setInt(3, vo1.getTestNo());
+			pstmt.setString(1, vo1.getTestTitle());
+			pstmt.setString(2, vo1.getTestContent());
+			
+			
+			
+			// 5. SQL(insert) 수행 후 결과 반환 받기 
+			
+			// pstmt.executeQuery(); -> SELECT 수행, ResultSe 반환 
+			result=pstmt.executeUpdate();// -> DML 수행, 반영된 행의 개수(int) 반환
+			
+			
+		}finally {
+			// 6. 사용한 JDBC 객체 자원 반환(close()) 
+			close(pstmt);
+			
+		}
+		return result;
+	}
+
 }

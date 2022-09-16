@@ -33,11 +33,45 @@ public class TestService {
 	
 	
 	
+//	/** 1행 삽입 서비스 
+//	 * @param vo1
+//	 * @return
+//	 */
+//	public int insert(TestVO vo1) throws SQLException {
+//		// throws Exception
+//		//-> 아래 catch문에서 강제 발생된 예외를 
+//		// 호출부로 던진다는 구문 
+//		
+//		
+//		// 커넥션 생성 
+//		
+//		Connection conn=getConnection();
+//		
+//		// INSERT DAO 메서드를 호출하여 수행 후 결과 반환받기 
+//		// -> Service에서 생성한 Connection 객체를 반드시 같이 전달해야한다.
+//		int result=dao.insert(conn, vo1);
+//		// result = SQL 수행 후 반영된 결과 행의 개수 
+//		
+//		if(result>0) commit(conn);
+//		else rollback(conn);
+//		
+//		// 커넥션 반환 (close)
+//		close(conn);
+//		
+//		// 결과 반환 
+//		return result;
+//	}
+
+	
 	/** 1행 삽입 서비스 
 	 * @param vo1
 	 * @return
 	 */
 	public int insert(TestVO vo1) throws SQLException {
+		// throws Exception
+		//-> 아래 catch문에서 강제 발생된 예외를 
+		// 호출부로 던진다는 구문 
+		
 		
 		// 커넥션 생성 
 		
@@ -45,7 +79,7 @@ public class TestService {
 		
 		// INSERT DAO 메서드를 호출하여 수행 후 결과 반환받기 
 		// -> Service에서 생성한 Connection 객체를 반드시 같이 전달해야한다.
-		int result=dao.insert(conn, vo1);
+		int result=dao.selup(conn, vo1);
 		// result = SQL 수행 후 반영된 결과 행의 개수 
 		
 		if(result>0) commit(conn);
@@ -67,8 +101,9 @@ public class TestService {
 	 * @param vo2
 	 * @param vo3
 	 * @return
+	 * @throws Exception 
 	 */
-	public int insert(TestVO vo1, TestVO vo2, TestVO vo3) {
+	public int insert(TestVO vo1, TestVO vo2, TestVO vo3) throws Exception {
 		
 		// 1. Connection생성(무조건 1번!)
 		Connection conn=JDBCTemplate.getConnection();
@@ -101,9 +136,10 @@ public class TestService {
 			// -> DB에는 성공된 데이터만 저장이 된다. 
 			// == DB에 저장된 데이터의 신뢰도가 상승한다. 
 			
+			// Run2클래스로 예외를 전달할 수 있도록 예외 강제 발생 
+			throw new Exception ("DAO 수행 중 예외 발생");
 			
-			
-			e.printStackTrace();
+			//e.printStackTrace();
 		}finally {// 무조건 conn 반환하기 
 			close(conn);
 		}

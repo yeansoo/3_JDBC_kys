@@ -7,5 +7,12 @@
 <entry key="insert">
 	INSERT INTO TB_TEST
 	VALUES(?,?,?)
+</entry> 
+
+<entry key="selup">
+	UPDATE TB_TEST SET
+	TEST_TITLE=?,
+	TEST_CONTENT=?
+	WHERE TEST_NO=?
 </entry>
 </properties>
