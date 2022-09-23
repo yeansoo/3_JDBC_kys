@@ -42,12 +42,8 @@ public class MemberView {
 			System.out.println();
 
 			switch (input) {
-			case 1:
-				selectMyinfo();
-				break; // 로그인 
-			case 2:
-				selectAll();
-				break;// 회원가입 
+			case 1: selectMyinfo(); break; // 로그인 
+			case 2: selectAll(); break;// 회원가입 
 			case 3: updateMember(); break;
 			case 4: updatePw(); break;
 			case 5: secession(); break;
@@ -61,10 +57,133 @@ public class MemberView {
 			System.out.println("입력 형식 앙ㄴ맞음");
 		}
 	}
-
-
+	
+	
+	/**
+	 * 내 정보 조회 
+	 */
+	private void selectMyinfo() {
+		System.out.println("\n[내 정보 조회]\n");
+		
+		System.out.println("회원 번호 : " 	+ loginMember.getMemberNo());
+		System.out.println("아이디 : " 		+ loginMember.getMemberId());
+		System.out.println("이름 : " 		+ loginMember.getMemberName());
+		
+		System.out.print("성별 : " );
+		if(loginMember.getMemberGender().equals("M")) {
+			System.out.println("남");
+		}else {
+			System.out.println("여");
+		}
+		
+		System.out.println("가입일 : "		+ loginMember.getEnrollDate());
+	}
+	
+	
+	
+	/**
+	 * 회원 목록 조회
+	 */
+	private void selectAll() {
+		System.out.println("\n[회원 목록 조회]\n");
+		
+		// DB에서 회원 목록 조회(탈퇴 회원 미포함)
+		// + 가입일 내림차순
+		
+		try {
+			// 회원 목록 조회 서비스 호출 후 결과 반환 받기
+			List<Member> memberList = service.selectAll();
+			
+			// 조회 결과가 있으면 모두 출력
+			// 없으면 "조회 결과가 없습니다." 출력
+			
+			if(memberList.isEmpty()) { // 비어있는 경우
+				System.out.println("\n[조회 결과가 없습니다.]\n");
+				
+			}else {
+				
+				System.out.println("    아이디    이름  성별");
+				System.out.println("--------------------------");
+				
+				// 향상된 for문
+				for(Member member : memberList) {
+					
+					System.out.printf("%10s %5s %3s\n", member.getMemberId(),
+													   member.getMemberName(),
+													   member.getMemberGender());
+				}
+			}
+			
+			
+			
+		}catch (Exception e) {
+			System.out.println("\n<<회원 목록 조회 중 예외 발생>>\n");
+			e.printStackTrace();
+		}
+		
+	}
 	
 
+	/**
+	 *  회원정보 수정 
+	 */
+	private void updateMember() {
+		
+		try {
+			System.out.println("\n[회원 정보 수정]");
+			
+			
+			System.out.print("변경할 이름 : ");
+			String memberName=sc.next();
+			
+			String memberGender=null;
+			
+			while(true) {
+				System.out.print("변경할 성별(M/F) : ");
+				
+				memberGender=sc.next().toUpperCase();
+				
+				
+				if(memberGender.equals("M") || memberGender.equals("F")) {
+					break;
+				}else {
+					System.out.println("M 또는 F만 입력해주세요.");
+				}
+				
+			}
+			
+			// 서비스로 전달할 Member 객체 생성
+						Member member = new Member();
+						member.setMemberNo( loginMember.getMemberNo() );
+						member.setMemberName(memberName);
+						member.setMemberGender(memberGender);
+						
+						// 회원 정보 수정 서비스 메서드 호출 후 결과 반환 받기
+						int result = service.updateMember(member);
+						
+						if(result > 0) {
+							// loginMember에 저장된 값과
+							// DB에 수정된 값을 동기화 하는 작업이 필요하다!
+							loginMember.setMemberName(memberName);
+							loginMember.setMemberGender(memberGender);
+							
+							System.out.println("\n[회원 정보가 수정되었습니다.]\n");
+						}else {
+							
+							System.out.println("\n[수정 실패]\n");
+						}
+			
+			// 서비스로 전달할 Member 객체 생
+		}catch(Exception e) {
+			System.out.println("\n<<회원 정보 수정 중 예외 발생>>\n");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * 비밀번호 변경 
+	 */
 	private void updatePw() {
 		System.out.println("\n[비밀번호 변경]");
 		
@@ -105,61 +224,10 @@ public class MemberView {
 		}
 	}
 
-
-	private void selectAll() {
-		try {
-			
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-
-	private void selectMyinfo() {
-		System.out.println("\n내 정보 조회 ");
-		try {
-			List<Member> list= service.selectAll();
-			
-			if(list.size()==0)
-				System.out.println("없습니다");
-			else {
-				System.out.println(" 아이디 이름 성별");
-				System.out.println("-------------");
-				
-				for(Member m:list) {
-					System.out.printf("%10s %5s %3s\n",m.getMemberId(),m.getMemberName(),m.getMemberGender());
-				}
-			}
-		} catch (Exception e) {
-			
-			e.printStackTrace();
-		};
-	}
 	
-
-
-	private void updateMember() {
-		try {
-			System.out.println("\n[회원 정보 수정]");
-			
-			
-			System.out.print("변경할 이름 : ");
-			String memberName=sc.next();
-			
-			String memberGender=null;
-			
-//			while() {
-//				
-//			}
-			Member member=null;
-			int result=service.updateMember(member);
-			// 서비스로 전달할 Member 객체 생
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	
+	/**
+	 * 회원 탈퇴 
+	 */
 	private void secession() {
 		System.out.println("\n[회원 탈퇴]\n");
 		
@@ -175,6 +243,7 @@ public class MemberView {
 				if(ch=='Y') {
 					// 서비스 호출 후 결과 반환 받기
 					int result=service.secession(memberPw, loginMember.getMemberNo());
+					
 					if(result>0) {
 						System.out.println("\n[탈퇴되었습니다]\n");
 						input=0;

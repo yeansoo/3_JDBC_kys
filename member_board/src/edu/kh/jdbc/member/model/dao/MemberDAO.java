@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -22,22 +23,20 @@ public class MemberDAO {
 		try{
 			prop=new Properties();
 			prop.loadFromXML(new FileInputStream("member-query.xml"));
-			
-			
-			
-			
-			
-			
-			
-			
+		
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/** 회원 목록 조회 DAO
+	 * @param conn
+	 * @return
+	 * @throws Exception
+	 */
 	public List<Member> selectAll(Connection conn) throws Exception{
 		// 결과 저장용 변수 선언 
-		List<Member> list=null;
+		List<Member> memberList=new ArrayList<>();
 		try {
 			String sql=prop.getProperty("selectall");
 			
@@ -50,16 +49,28 @@ public class MemberDAO {
 				String memberId=rs.getString("MEMBER_ID");
 				String memberGender=rs.getString("MEMBER_GENDER");
 				
-				list.add(new Member(memberId,memberName,memberGender));
+				Member member=new Member();
+				
+				member.setMemberId(memberId);
+				member.setMemberName(memberName);
+				member.setMemberGender(memberGender);
+				
+				memberList.add(member);
 			}
 			
 		}finally {
 			close(rs);
 			close(stmt);
 		}
-		return list;
+		return memberList;
 	}
 
+	/** 회원정보 수정 DAO
+	 * @param conn
+	 * @param member
+	 * @return result
+	 * @throws Exception
+	 */
 	public int updateMember(Connection conn, Member member) throws Exception{
 		
 		int result=0;
@@ -96,9 +107,13 @@ public class MemberDAO {
 		}
 		return result;
 	}
+	
+	
+	
+	
 
 	public int secession(Connection conn, String memberPw, int memberNo) throws Exception {
-int result=0;
+		int result=0;
 		
 		try {
 			String sql=prop.getProperty("secession");
