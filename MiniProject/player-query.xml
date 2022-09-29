@@ -2,4 +2,83 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>player-query.xml</comment>
+
+
+	<entry key="insertGame">
+	
+	INSERT INTO PLAYER_TIME
+	VALUES(?, ?, DEFAULT)
+	
+	</entry>
+	
+	<entry key="ranking">
+	<!--
+	SELECT RANK() OVER(ORDER BY TO_NUMBER(PLAY_TIME) )
+	, PLAYER_NM, PLAY_TIME, PLAY_DATE
+	FROM PLAYER_TIME 
+	ORDER BY TO_NUMBER(PLAY_TIME) 
+	-->
+	
+	<!-- SELECT RANK() OVER(
+ ORDER BY MAX(TO_NUMBER(PLAY_TIME)) ), PLAYER_NM ,MAX(TO_NUMBER(PLAY_TIME)) 
+FROM PLAYER_TIME 
+GROUP BY PLAYER_NM 
+ORDER BY MAX(TO_NUMBER(PLAY_TIME)) -->
+
+SELECT 순위, PLAYER_NM ,PLAY_TIME  FROM (
+SELECT RANK() OVER(
+ ORDER BY MAX(TO_NUMBER(PLAY_TIME))) "순위" , PLAYER_NM ,MAX(TO_NUMBER(PLAY_TIME)) PLAY_TIME
+FROM PLAYER_TIME 
+GROUP BY PLAYER_NM 
+ORDER BY PLAY_TIME )
+WHERE 순위 &lt; 11
+
+	</entry>
+
+
+	<entry key="idDupCheck">
+	 	SELECT COUNT(*) FROM PLAYER_INFO
+	 	WHERE PLAYER_ID=?
+	 	AND SECESSION_FL='N'
+	</entry>
+	
+	<entry key="signIn">
+		INSERT INTO PLAYER_INFO
+		VALUES(SEQ_PLAY_NO.NEXTVAL,?,?,?,DEFAULT,DEFAULT)
+	</entry>
+
+
+	<entry key="login">
+		SELECT PLAYER_NO , PLAYER_ID , PLAYER_NAME ,
+ 		TO_CHAR(ENROLL_DATE,'YYYY"년" MM"월" DD"일" HH24:MI:SS') ENROLL_DATE
+		FROM "PLAYER_INFO"
+		WHERE PLAYER_ID=?
+		AND PLAYER_PW =?
+		AND SECESSION_FL ='N'
+	</entry>
+	
+	
+	<entry key="nameDupCheck">
+	
+		SELECT COUNT(*) FROM PLAYER_TIME
+	 	WHERE PLAYER_NM=?
+	
+	</entry>
+	
+	<entry key="myRecord">
+	
+		SELECT PLAYER_NM, PLAY_TIME, PLAY_DATE
+		FROM PLAYER_TIME
+		WHERE PLAYER_NM=?
+		ORDER BY PLAY_DATE
+		
+	</entry>
+	
+	<entry key="avgRecord">
+	
+		SELECT AVG(PLAY_TIME) AVG_TIME
+	FROM PLAYER_TIME 
+	WHERE PLAYER_NM=?
+	
+	</entry>
 </properties>

@@ -20,6 +20,11 @@ public class GameRun {
 	// 시작 누르면 321 나오고 바로 문자열 출력, 바로 따라치기 
 	
 	// 회원- 최고기록 
+	// 회원 - 평균점수 
+	
+
+	// 게임테이블-순위 , 점수 , 시간, 사람 fk 플레이어 테이블  
+	// 플레이어 테이블
 	
 	public static void main(String[] args) {
 		try {

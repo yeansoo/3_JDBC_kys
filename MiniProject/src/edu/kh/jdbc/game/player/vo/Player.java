@@ -1,21 +1,29 @@
 package edu.kh.jdbc.game.player.vo;
 
 public class Player {
-	private String playerName; 		// 플레이어 이름 
-	
+	private int playerNo;
 	private String playerId;
 	private String playerPw;
+	private String playerName; 		// 플레이어 이름 
+	private String enrollDate;
+	private String secessionFlag;
 	
-	private double playtime;	// 게임 초 
-	private int gamecount;		// 게임 플레이 횟수 
+	public Player() {}
 	
-	
-	public String getPlayerName() {
-		return playerName;
+	public Player(String playerId, String playerPw, String playerName) {
+		this.playerId=playerId;
+		this.playerPw=playerPw;
+		this.playerName=playerName;
 	}
-	public void setPlayerName(String playerName) {
-		this.playerName = playerName;
+	
+	public int getPlayerNo() {
+		return playerNo;
 	}
+	
+	public void setPlayerNo(int playerNo) {
+		this.playerNo=playerNo;
+	}
+	
 	public String getPlayerId() {
 		return playerId;
 	}
@@ -28,16 +36,30 @@ public class Player {
 	public void setPlayerPw(String playerPw) {
 		this.playerPw = playerPw;
 	}
-	public double getPlaytime() {
-		return playtime;
+	public String getPlayerName() {
+		return playerName;
 	}
-	public void setPlaytime(double playtime) {
-		this.playtime = playtime;
+	public void setPlayerName(String playerName) {
+		this.playerName = playerName;
 	}
-	public int getGamecount() {
-		return gamecount;
+	public String getEnrollDate() {
+		return enrollDate;
 	}
-	public void setGamecount(int gamecount) {
-		this.gamecount = gamecount;
+	public void setEnrollDate(String enrollDate) {
+		this.enrollDate = enrollDate;
 	}
+	public String getSecessionFlag() {
+		return secessionFlag;
+	}
+	public void setSecessionFlag(String secessionFlag) {
+		this.secessionFlag = secessionFlag;
+	}
+	
+	
+	
+
+	
+
+	
+
 }

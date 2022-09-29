@@ -44,8 +44,8 @@ public class BoardView {
 				 case 1: selectAllBoard(); break; // 게시글 목록 조회 
 				 case 2: selectBoard(); break;
 				 
-				 case 3: break;
-				 case 4: break;
+				 case 3: insertBoard(); break;
+				 case 4: searchBoard(); break;
 				 case 0: System.out.println("[메인메뉴로 이동합니다.]"); break;
 				 default:
 					 System.out.println("메뉴에 작성된 번호만 입력해주세요.");
@@ -496,6 +496,125 @@ public class BoardView {
 		}
 	}
 	
+	
+	/**
+	 * 게시글 등록 (삽입) 
+	 */
+	private void insertBoard() {
+		try{
+			
+			System.out.println("\n[게시글 등록]\n");
+			
+			System.out.print("제목 : ");
+			String boardTitle=sc.nextLine();
+			
+			System.out.print("내용 : ");
+			String boardContent=inputContent();
+			
+			// board객체에 제목, 내용, 회원번호를 담아서 서비스에 전달
+			Board board=new Board();
+			
+			board.setBoardTitle(boardTitle);
+			board.setBoardContent(boardContent);
+			board.setMemberNo(MainView.loginMember.getMemberNo());
+			
+			int result=bService.insertBoard(board);
+			// 0 또는 생성된 게시글 번호 
+			
+			if(result>0) {
+				System.out.println("\n[게시글이 등록되었습니다.]\n");
+				
+				// 게시글 상세 조회 서비스 호출 후 결과 반환받기
+				Board b=bService.selectBoard(result , MainView.loginMember.getMemberNo());
+									// 게시글 번호,
+				
+		         if (b != null) {
+		             System.out.println("--------------------------------------------------------");
+		             System.out.printf("글번호 : %d \n제목 : %s\n", b.getBoardNo(), b.getBoardTitle());
+		             System.out.printf("작성자 : %s | 작성일 : %s  \n조회수 : %d\n", 
+		                   b.getMemberName(), b.getCreateDate(), b.getReadCount());
+		             System.out.println("--------------------------------------------------------\n");
+		             System.out.println(b.getBoardContent());
+		             System.out.println("\n--------------------------------------------------------");
 
+		          
+		             // 댓글 목록
+		             if(!b.getCommentList().isEmpty()) {
+		                for(Comment c : b.getCommentList()) {
+		                   System.out.printf("댓글번호: %d   작성자: %s  작성일: %s\n%s\n",
+		                         c.getCommentNo(), c.getMemberName(), c.getCreateDate(), c.getCommentContent());
+		                   System.out.println(" --------------------------------------------------------");
+		                }
+		             }
+		             
+		             // 댓글 등록, 수정, 삭제
+		             // 수정/삭제 메뉴
+		             subBoardMenu(b);
+		             
+		             
+		          } else {
+		             System.out.println("\n[해당 번호의 게시글이 존재하지 않습니다.]\n");
+		          }
+				
+			}else {
+				System.out.println("\n[게시글이 등록 실패]\n");
+			}
+			
+			
+
+		}catch(Exception e) {
+			System.out.println("\n<<게시글 등록 중 예외 발생>>\n");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 게시글 검색 
+	 */
+	private void searchBoard() {
+		try {
+			System.out.println("\n[게시글 검색]\n");
+			
+			System.out.println("1) 제목");
+			System.out.println("2) 내용 ");
+			System.out.println("3) 제목 + 내용 ");
+			System.out.println("4) 작성자");
+			System.out.print("검색 조건 선택 : ");
+			
+			int condition=sc.nextInt();
+			sc.nextLine();
+			
+			if(condition>=1 && condition<=4) { // 정상 입력 
+				
+				System.out.print("검색어 입력 : ");
+				String query=sc.nextLine();
+				
+				// 검색 서비스 호출 후 결과 반환 받기 
+				List<Board> boardList=bService.searchBoard(condition, query);
+				
+				
+				if(boardList.isEmpty()) {
+					System.out.println("\n[검색 결과가 없습니다.]\n ");
+				}else {
+					
+					for(Board b:boardList) {
+						// 3 | 샘플제목3[4] | 유저삼 | 3시간 전 | 10
+						System.out.printf("%d | %s [ %d ] | %s | %s | %d\n", b.getBoardNo(), b.getBoardTitle(), b.getCommentCount(),
+								b.getMemberName(), b.getCreateDate(), b.getReadCount());
+					}
+						
+				}
+				
+			}else { // 비정상 입력 
+				System.out.println("\n[1~4 사이의 숫자를 입력해주세요]\n");
+			}
+			
+			
+		}catch(Exception e) {
+			System.out.println("\n<<게시글 검색 중 예외 발생>>\n");
+			e.printStackTrace();
+			
+		}
+	}
 	
 }
